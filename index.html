@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,215 +6,166 @@
     <title>Sunnovative - Company Profile</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #3679bc; /* Deep Blue / Navy */
-            --accent: #f59303; /* Solar Orange/Yellow */
-            --bg: #F8FAFC;
-            --card-bg: #FFFFFF;
-            --text-main: #1E293B;
-            --text-muted: #64748B;
-        }
+        :root { --primary: #3679bc; --accent: #f59303; --bg: #F8FAFC; --card-bg: #FFFFFF; --text-main: #1E293B; --text-muted: #64748B; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg); color: var(--text-main); line-height: 1.6; padding-bottom: 90px; }
-        
-        /* Navigation Tabs */
         .tabs { position: sticky; top: 0; display: flex; background: var(--primary); z-index: 100; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .tab { flex: 1; text-align: center; padding: 16px 10px; color: white; font-weight: 600; cursor: pointer; transition: 0.3s; opacity: 0.7; font-size: 0.95rem; }
         .tab.active { opacity: 1; border-bottom: 4px solid var(--accent); }
-        
-        /* Sections */
+        .admin-link { position: absolute; right: 15px; top: 16px; text-decoration: none; font-size: 16px; opacity: 0.4; transition: 0.3s; }
+        .admin-link:hover { opacity: 1; transform: scale(1.1); }
         .section { display: none; padding: 16px; animation: fadeIn 0.3s ease-in-out; }
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         h2 { color: var(--primary); margin-bottom: 16px; font-size: 1.4rem; }
-        
-        /* Card Layout */
         .card { background: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        
-        /* Header Profile */
-        .profile-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-        .profile-img { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); }
+        .profile-header { display: flex; flex-direction: column; text-align: center; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .profile-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .profile-info h1 { font-size: 1.3rem; color: var(--primary); margin-bottom: 4px; }
         .profile-info p { color: var(--text-muted); font-size: 0.9rem; font-weight: 600;}
         .contact-links { display: flex; flex-direction: column; gap: 10px; }
         .contact-links a { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-main); font-weight: 600; background: var(--bg); padding: 12px 16px; border-radius: 8px; transition: 0.2s;}
-        .contact-links a:active { background: #e2e8f0; }
-        .contact-links a span { color: var(--accent); font-size: 1.2rem;}
-        
-        /* Products */
         .product-item { background: var(--bg); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent); }
-        .product-item:last-child { margin-bottom: 0; }
         .product-item strong { color: var(--primary); display: block; font-size: 1.1rem; margin-bottom: 4px; }
         .product-item p { font-size: 0.9rem; color: var(--text-muted); }
-
-        /* Journey Timeline */
         .timeline { border-left: 2px dashed var(--text-muted); margin-left: 14px; padding-left: 24px; }
         .timeline-item { position: relative; margin-bottom: 24px; }
-        .timeline-item:last-child { margin-bottom: 0; }
         .timeline-item::before { content: ''; position: absolute; left: -31px; top: 4px; width: 14px; height: 14px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 4px var(--card-bg); }
         .timeline-year { font-weight: 700; color: var(--primary); font-size: 1.1rem; }
-        .timeline-text { font-size: 0.95rem; color: var(--text-main); mt-2 }
-        
-        /* Grid for Partners & Gallery */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .logo-card { background: var(--bg); padding: 16px; text-align: center; border-radius: 8px; font-weight: 700; color: var(--primary); display: flex; align-items: center; justify-content: center; height: 80px; font-size: 1.1rem;}
+        .logo-card { background: var(--bg); text-align: center; border-radius: 8px; font-weight: 700; color: var(--primary); display: flex; align-items: center; justify-content: center; height: 80px; font-size: 1.1rem;}
         .gallery img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        
-        /* Video Embed */
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; }
-        .video-container iframe, .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-        /* Sticky Footer CTA */
-        .cta-btn { position: fixed; bottom: 20px; left: 20px; right: 20px; background: var(--accent); color: var(--primary); text-align: center; padding: 16px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); z-index: 100; transition: transform 0.2s; }
-        .cta-btn:active { transform: scale(0.98); }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; margin-bottom: 16px;}
+        .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .cta-btn { position: fixed; bottom: 20px; left: 20px; right: 20px; background: var(--accent); color: var(--primary); text-align: center; padding: 16px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); z-index: 100;}
+        a[href*='netlify.com'], #netlify-badge { display: none !important; }
     </style>
 </head>
 <body>
-
-    <!-- Top Sticky Navigation -->
     <div class="tabs">
         <div class="tab active" onclick="switchTab('page1', this)">Profile & Products</div>
         <div class="tab" onclick="switchTab('page2', this)">Partners & Media</div>
+        <!-- ADMIN LOGIN LINK IN NAVBAR -->
+        <a href="admin.html" class="admin-link" title="Go to Admin Panel">⚙️</a>
     </div>
-
-    <!-- PAGE 1: Intro, Products, Journey -->
     <div id="page1" class="section active">
-        
-        <!-- Header / Business Card -->
         <div class="card">
             <div class="profile-header">
-                <!-- BOSS PHOTO: Ensure image is named 'boss-photo.png' in the same folder -->
-                <img src="boss-photo.png" alt="Ravi S." class="profile-img" onerror="this.src='https://ui-avatars.com/api/?name=Ravi+S&background=0A192F&color=fff&size=150'">
+                <img id="dyn-bossPhotoUrl" src="boss-photo.png" alt="Profile" class="profile-img" onerror="this.src='https://ui-avatars.com/api/?name=User&background=3679bc&color=fff&size=150'">
                 <div class="profile-info">
-                    <h1>Ravi S.</h1>
-                    <p style="color: var(--primary); font-weight: 700; margin-bottom: 5px;">Solar Energy Solution Expert</p>
-                    <p style="font-size: 0.85rem;">Providing best in class branded solar modules for residential, commercial & MW projects.</p>
+                    <h1 id="dyn-bossName">Ravi S.</h1>
+                    <p id="dyn-subtitle">Sunnovative / Solarkits</p>
+                    <p id="dyn-tagline" style="color: var(--primary); font-weight: 700; margin-bottom: 5px; margin-top:5px;">Solar Energy Solution Expert</p>
+                    <p id="dyn-bio" style="font-size: 0.85rem;">Providing best in class branded solar modules for residential, commercial & MW projects.</p>
                 </div>
             </div>
             <div class="contact-links">
-                <a href="tel:+919274863608"><span>📞</span> +91 9274863608</a>
-                <a href="mailto:ravi.s@sunnovative.com"><span>✉️</span> ravi.s@sunnovative.com</a>
-                <a href="https://sunnovative.com/" target="_blank"><span>🌐</span> sunnovative.com</a>
+                <a id="dyn-phone-link" href="tel:+919274863608"><span>📞</span> <span id="dyn-phone-text">+91 9274863608</span></a>
+                <a id="dyn-emailField-link" href="mailto:ravi.s@sunnovative.com"><span>✉️</span> <span id="dyn-emailField-text">ravi.s@sunnovative.com</span></a>
+                <a id="dyn-website-link" href="https://sunnovative.com/" target="_blank"><span>🌐</span> <span id="dyn-website-text">sunnovative.com</span></a>
             </div>
         </div>
-
-        <!-- Our Products -->
         <div class="card">
             <h2>Our Products & Services</h2>
-            <div class="product-item">
-                <strong>☀️ Solarkits</strong>
-                <p>B2B supply for govt tenders and discom schemes.</p>
-            </div>
-            <div class="product-item">
-                <strong>⚙️ BOSkit</strong>
-                <p>Manufacturing branded BOS kit & OEM supplier.</p>
-            </div>
+            <div class="product-item"><strong id="dyn-p1Title">☀️ Solarkits</strong><p id="dyn-p1Desc">B2B supply for govt tenders and discom schemes.</p></div>
+            <div class="product-item"><strong id="dyn-p2Title">⚙️ BOSkit</strong><p id="dyn-p2Desc">Manufacturing branded BOS kit & OEM supplier.</p></div>
+        </div>
+        
+        <div class="card">
+            <h2>Why Choose Solar?</h2>
+            <div class="product-item"><strong id="dyn-why1Title">💡 Huge Savings</strong><p id="dyn-why1Desc">Solar saves you money on energy bills. As utility costs go up, the amount of your solar savings increases.</p></div>
+            <div class="product-item"><strong id="dyn-why2Title">🏛️ Subsidy Benefits</strong><p id="dyn-why2Desc">Under the Surya Gujarat scheme, up to 40% subsidy is available for residential systems...</p></div>
+            <div class="product-item"><strong id="dyn-why3Title">🛡️ Best-in-Class Warranty</strong><p id="dyn-why3Desc">Enjoy a 10-year replacement warranty on panels and inverters...</p></div>
         </div>
 
-        <!-- Company Journey Timeline -->
         <div class="card">
             <h2>Company Journey</h2>
             <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-year">2017</div>
-                    <div class="timeline-text">Founded</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-year">2020</div>
-                    <div class="timeline-text">Pvt Ltd Established</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-year">2025</div>
-                    <div class="timeline-text">Solarkits supply started</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-year">2026</div>
-                    <div class="timeline-text">Govt & Discom supply started</div>
-                </div>
-            </div>
-        </div>
-            <!-- Additional Info & FAQ from Sunnovative.com -->
-        <div class="card">
-            <h2>Why Choose Solar?</h2>
-            <div class="product-item">
-                <strong>?? Huge Savings</strong>
-                <p>Solar saves you money on energy bills. As utility costs go up, the amount of your solar savings increases.</p>
-            </div>
-            <div class="product-item">
-                <strong>??? Subsidy Benefits</strong>
-                <p>Under the Surya Gujarat scheme, up to 40% subsidy is available for residential systems (up to 3kW). You can also get up to 70% loan from nationalized banks.</p>
-            </div>
-            <div class="product-item">
-                <strong>??? Best-in-Class Warranty</strong>
-                <p>Enjoy a 10-year replacement warranty on panels and inverters, plus a 25-year performance warranty.</p>
+                <div class="timeline-item"><div class="timeline-year" id="dyn-j1Year">2017</div><div class="timeline-text" id="dyn-j1Text">Founded</div></div>
+                <div class="timeline-item"><div class="timeline-year" id="dyn-j2Year">2020</div><div class="timeline-text" id="dyn-j2Text">Pvt Ltd Established</div></div>
+                <div class="timeline-item"><div class="timeline-year" id="dyn-j3Year">2025</div><div class="timeline-text" id="dyn-j3Text">Solarkits supply started</div></div>
+                <div class="timeline-item"><div class="timeline-year" id="dyn-j4Year">2026</div><div class="timeline-text" id="dyn-j4Text">Govt & Discom supply started</div></div>
             </div>
         </div>
     </div>
-
-    <!-- PAGE 2: Partners, Photos, Video -->
     <div id="page2" class="section">
-        
-        <!-- Solar Brand Partners -->
         <div class="card">
             <h2>Our Solar Brand Partners</h2>
             <div class="grid">
-                <div class="logo-card">Redren</div>
-                <div class="logo-card">Sunify</div>
-                <div class="logo-card">Solaryaan</div>
-                <div class="logo-card">Polycab</div>
+                <div class="logo-card" style="padding:0; background:transparent;"><img id="dyn-partner1Url" src="https://via.placeholder.com/150x80/ffffff/3679bc?text=Logo+1" style="width:100%; height:100%; object-fit:contain;"></div>
+                <div class="logo-card" style="padding:0; background:transparent;"><img id="dyn-partner2Url" src="https://via.placeholder.com/150x80/ffffff/3679bc?text=Logo+2" style="width:100%; height:100%; object-fit:contain;"></div>
+                <div class="logo-card" style="padding:0; background:transparent;"><img id="dyn-partner3Url" src="https://via.placeholder.com/150x80/ffffff/3679bc?text=Logo+3" style="width:100%; height:100%; object-fit:contain;"></div>
+                <div class="logo-card" style="padding:0; background:transparent;"><img id="dyn-partner4Url" src="https://via.placeholder.com/150x80/ffffff/3679bc?text=Logo+4" style="width:100%; height:100%; object-fit:contain;"></div>
             </div>
         </div>
-
-        <!-- Photos / Gallery -->
         <div class="card">
             <h2>Factory & Products</h2>
             <div class="grid gallery">
-                <!-- FACTORY PHOTOS: Make sure to name your images 'factory-1.jpg' and 'factory-2.jpg' -->
-                <img src="factory-1.jpg" alt="Factory View 1" onerror="this.src='https://via.placeholder.com/300x200?text=Factory+Photo+1'">
-                <img src="factory-2.jpg" alt="Factory View 2" onerror="this.src='https://via.placeholder.com/300x200?text=Factory+Photo+2'">
+                <img id="dyn-factory1Url" src="factory-1.jpg" onerror="this.src='https://via.placeholder.com/300x200?text=Photo+1'">
+                <img id="dyn-factory2Url" src="factory-2.jpg" onerror="this.src='https://via.placeholder.com/300x200?text=Photo+2'">
             </div>
         </div>
-
-        <!-- Factory Video -->
         <div class="card">
             <h2>Factory Tour Videos</h2>
-            <div class="video-container" style="margin-bottom: 16px;">
-                <video controls src="video1.mp4" poster="factory-1.jpg">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-            <div class="video-container">
-                <video controls src="video2.mp4" poster="factory-2.jpg">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
+            <div class="video-container"><video id="dyn-video1Url" controls src="video1.mp4"></video></div>
+            <div class="video-container"><video id="dyn-video2Url" controls src="video2.mp4"></video></div>
         </div>
     </div>
-
-    <!-- Floating WhatsApp CTA -->
-    <a href="https://wa.me/919274863608?text=Hello%20Ravi,%20I%20would%20like%20to%20know%20more%20about%20Sunnovative%20products." class="cta-btn" target="_blank">
-        Get in touch (WhatsApp)
-    </a>
-
-    <!-- JavaScript for Tab Switching -->
+    <a id="dyn-wa-link" href="https://wa.me/919274863608" class="cta-btn" target="_blank">Get in touch (WhatsApp)</a>
     <script>
         function switchTab(tabId, element) {
-            // Hide all sections
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            // Remove active class from all tabs
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            
-            // Show selected section and activate tab
             document.getElementById(tabId).classList.add('active');
             element.classList.add('active');
-            
-            // Scroll to top for better mobile experience
             window.scrollTo(0, 0);
         }
     </script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js"></script>
+    <script>
+        firebase.initializeApp({
+          apiKey: "AIzaSyDlx7ezVLsG0YAlReCWYMyPmShS7LYmXyA",
+          authDomain: "sunnovative-web-app.firebaseapp.com",
+          projectId: "sunnovative-web-app",
+          storageBucket: "sunnovative-web-app.firebasestorage.app",
+          messagingSenderId: "87809568620",
+          appId: "1:87809568620:web:447c80724503e2368e4d49"
+        });
+        const db = firebase.firestore();
+        const updateEl = (id, val, isImg=false) => {
+            const el = document.getElementById(id);
+            if(el && val) {
+                if(isImg) el.src = val;
+                else el.innerText = val;
+            }
+        };
+        db.collection('siteData').doc('main').onSnapshot(doc => {
+            if (doc.exists) {
+                const d = doc.data();
+                Object.keys(d).forEach(key => {
+                    if (key.includes('Url')) {
+                        updateEl('dyn-' + key, d[key], true);
+                    } else if (key !== 'phone' && key !== 'emailField' && key !== 'website') {
+                        updateEl('dyn-' + key, d[key], false);
+                    }
+                });
+                
+                if(d.phone) {
+                    document.getElementById('dyn-phone-text').innerText = "+91 " + d.phone;
+                    document.getElementById('dyn-phone-link').href = "tel:+91" + d.phone;
+                    document.getElementById('dyn-wa-link').href = "https://wa.me/91" + d.phone;
+                }
+                if(d.emailField) {
+                    document.getElementById('dyn-emailField-text').innerText = d.emailField;
+                    document.getElementById('dyn-emailField-link').href = "mailto:" + d.emailField;
+                }
+                if(d.website) {
+                    document.getElementById('dyn-website-text').innerText = d.website.replace('https://','');
+                    document.getElementById('dyn-website-link').href = d.website;
+                }
+            }
+        });
+    </script>
 </body>
 </html>
-
-
-

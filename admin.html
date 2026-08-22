@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunnovative - Professional Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; font-family: 'Inter', sans-serif; background: #f0f2f5; color: #333; display: flex; height: 100vh; overflow: hidden;}
+        #login-section { display: flex; justify-content: center; align-items: center; width: 100%; height: 100vh; background: #0a192f;}
+        .login-box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center;}
+        .login-box h2 { color: #3679bc; margin-bottom: 20px;}
+        .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;}
+        .login-box button { width: 100%; padding: 12px; background: #f59303; color: white; border: none; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 16px;}
+        .login-box button:hover { background: #e08903; }
+        #dashboard-wrapper { display: none; width: 100%; height: 100vh; display: flex; }
+        #sidebar { width: 260px; background: #0a192f; color: white; display: flex; flex-direction: column; flex-shrink: 0;}
+        .sidebar-header { padding: 20px; font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid #1a365d; text-align: center; color: #f59303;}
+        .nav-menu { flex: 1; padding: 10px 0; overflow-y: auto;}
+        .nav-item { padding: 15px 20px; cursor: pointer; transition: 0.2s; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;}
+        .nav-item:hover, .nav-item.active { background: #1a365d; border-left: 4px solid #f59303; }
+        .logout-btn { padding: 15px; background: #dc3545; text-align: center; cursor: pointer; font-weight: bold; transition: 0.2s;}
+        .logout-btn:hover { background: #c82333; }
+        #main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; }
+        .header-bar { background: white; padding: 15px 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10;}
+        .header-bar h2 { margin: 0; font-size: 1.4rem; color: #3679bc;}
+        .save-btn { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 6px rgba(40,167,69,0.3); transition: 0.2s;}
+        .save-btn:hover { background: #218838; transform: translateY(-1px);}
+        .tab-content { padding: 30px; max-width: 900px; margin: 0 auto; width: 100%; display: none;}
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);}}
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 25px;}
+        .card h3 { margin-top: 0; color: #3679bc; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;}
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; color: #555;}
+        input[type="text"], textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-family: 'Inter', sans-serif;}
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: #3679bc;}
+        .upload-row { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; background: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #eee;}
+        .upload-row input[type="file"] { flex: 1; }
+        .upload-btn { background: #f59303; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;}
+        .upload-btn:hover { background: #e08903; }
+        .preview-img { width: 60px; height: 60px; object-fit: contain; border-radius: 4px; border: 1px solid #ccc; background: white;}
+        #global-msg { margin: 0; font-weight: bold; color: green; font-size: 0.95rem;}
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-storage-compat.js"></script>
+</head>
+<body>
+<div id="login-section">
+    <div class="login-box">
+        <h2>Sunnovative Admin</h2>
+        <input type="email" id="email" placeholder="Email Address">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Sign In to Dashboard</button>
+        <p style="color:red; margin-top:15px; font-size: 0.9rem;" id="login-error"></p>
+    </div>
+</div>
+<div id="dashboard-wrapper" style="display:none;">
+    <div id="sidebar">
+        <div class="sidebar-header">Sunnovative Panel</div>
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="switchAdminTab('tab-info', this)">?? General Info</div>
+            <div class="nav-item" onclick="switchAdminTab('tab-media', this)">?? Media (Images/Video)</div>
+            <div class="nav-item" onclick="switchAdminTab('tab-products', this)">?? Products & Services</div>
+            <div class="nav-item" onclick="switchAdminTab('tab-why', this)">?? Why Choose Solar</div>
+            <div class="nav-item" onclick="switchAdminTab('tab-journey', this)">?? Company Journey</div>
+        </div>
+        <div class="logout-btn" onclick="logout()">?? Logout</div>
+    </div>
+    <div id="main-content">
+        <div class="header-bar">
+            <h2>Website Content Manager</h2>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <span id="global-msg"></span>
+                <button class="save-btn" onclick="saveAllText()">?? Save Text Changes</button>
+            </div>
+        </div>
+        <!-- 1. GENERAL INFO TAB -->
+        <div id="tab-info" class="tab-content active">
+            <div class="card">
+                <h3>Profile Details</h3>
+                <div class="grid">
+                    <div class="form-group"><label>Boss Name</label><input type="text" id="bossName"></div>
+                    <div class="form-group"><label>Subtitle</label><input type="text" id="subtitle"></div>
+                    <div class="form-group"><label>Tagline</label><input type="text" id="tagline"></div>
+                    <div class="form-group"><label>Phone Number</label><input type="text" id="phone"></div>
+                    <div class="form-group"><label>Email Address</label><input type="text" id="emailField"></div>
+                    <div class="form-group"><label>Website Link</label><input type="text" id="website"></div>
+                </div>
+                <div class="form-group"><label>Bio / Description</label><textarea id="bio" rows="3"></textarea></div>
+            </div>
+        </div>
+        <!-- 2. MEDIA TAB -->
+        <div id="tab-media" class="tab-content">
+            <div class="card">
+                <h3>Upload Photos & Logos</h3>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">Current images are shown on the left. Upload new ones to replace them.</p>
+                <div class="upload-row"><img id="prev-bossPhotoUrl" class="preview-img" src=""><label style="width: 110px; font-weight:bold;">Boss Photo:</label><input type="file" id="file-bossPhotoUrl" accept="image/*"><button class="upload-btn" onclick="uploadFile('file-bossPhotoUrl', 'bossPhotoUrl')">Upload Image</button></div>
+                <div class="upload-row"><img id="prev-partner1Url" class="preview-img" src=""><label style="width: 110px; font-weight:bold;">Adani Solar:</label><input type="file" id="file-partner1Url" accept="image/*"><button class="upload-btn" onclick="uploadFile('file-partner1Url', 'partner1Url')">Upload Image</button></div>
+                <div class="upload-row"><img id="prev-partner2Url" class="preview-img" src=""><label style="width: 110px; font-weight:bold;">Waaree:</label><input type="file" id="file-partner2Url" accept="image/*"><button class="upload-btn" onclick="uploadFile('file-partner2Url', 'partner2Url')">Upload Image</button></div>
+                <div class="upload-row"><img id="prev-partner3Url" class="preview-img" src=""><label style="width: 110px; font-weight:bold;">Vikram Solar:</label><input type="file" id="file-partner3Url" accept="image/*"><button class="upload-btn" onclick="uploadFile('file-partner3Url', 'partner3Url')">Upload Image</button></div>
+                <div class="upload-row"><img id="prev-partner4Url" class="preview-img" src=""><label style="width: 110px; font-weight:bold;">Tata Power:</label><input type="file" id="file-partner4Url" accept="image/*"><button class="upload-btn" onclick="uploadFile('file-partner4Url', 'partner4Url')">Upload Image</button></div>
+                <div class="upload-row"><img id="prev-factory1Url" class="preview-img" src=""><label style="width: 110px; font-weight:bold;">Factory Photo 1:</label><input type="file" id="file-factory1Url" accept="image/*"><button class="upload-btn" onclick="uploadFile('file-factory1Url', 'factory1Url')">Upload Image</button></div>
+                <div class="upload-row"><img id="prev-factory2Url" class="preview-img" src=""><label style="width: 110px; font-weight:bold;">Factory Photo 2:</label><input type="file" id="file-factory2Url" accept="image/*"><button class="upload-btn" onclick="uploadFile('file-factory2Url', 'factory2Url')">Upload Image</button></div>
+            </div>
+            <div class="card">
+                <h3>Upload Videos</h3>
+                <div class="upload-row"><video id="prev-video1Url" class="preview-img" src="" muted></video><label style="width: 110px; font-weight:bold;">Factory Video 1:</label><input type="file" id="file-video1Url" accept="video/*"><button class="upload-btn" style="background:#3679bc;" onclick="uploadFile('file-video1Url', 'video1Url')">Upload Video</button></div>
+                <div class="upload-row"><video id="prev-video2Url" class="preview-img" src="" muted></video><label style="width: 110px; font-weight:bold;">Factory Video 2:</label><input type="file" id="file-video2Url" accept="video/*"><button class="upload-btn" style="background:#3679bc;" onclick="uploadFile('file-video2Url', 'video2Url')">Upload Video</button></div>
+            </div>
+        </div>
+        <!-- 3. PRODUCTS TAB -->
+        <div id="tab-products" class="tab-content">
+            <div class="card">
+                <h3>Products & Services</h3>
+                <div class="grid">
+                    <div class="form-group"><label>Product 1 Title</label><input type="text" id="p1Title"></div>
+                    <div class="form-group"><label>Product 1 Description</label><textarea id="p1Desc" rows="3"></textarea></div>
+                    <div class="form-group"><label>Product 2 Title</label><input type="text" id="p2Title"></div>
+                    <div class="form-group"><label>Product 2 Description</label><textarea id="p2Desc" rows="3"></textarea></div>
+                </div>
+            </div>
+        </div>
+        <!-- 4. WHY CHOOSE SOLAR TAB -->
+        <div id="tab-why" class="tab-content">
+            <div class="card">
+                <h3>Why Choose Solar (Benefits)</h3>
+                <div class="grid">
+                    <div class="form-group"><label>Benefit 1 Title</label><input type="text" id="why1Title"></div>
+                    <div class="form-group"><label>Benefit 1 Description</label><textarea id="why1Desc" rows="3"></textarea></div>
+                    <div class="form-group"><label>Benefit 2 Title</label><input type="text" id="why2Title"></div>
+                    <div class="form-group"><label>Benefit 2 Description</label><textarea id="why2Desc" rows="3"></textarea></div>
+                    <div class="form-group"><label>Benefit 3 Title</label><input type="text" id="why3Title"></div>
+                    <div class="form-group"><label>Benefit 3 Description</label><textarea id="why3Desc" rows="3"></textarea></div>
+                </div>
+            </div>
+        </div>
+        <!-- 5. JOURNEY TAB -->
+        <div id="tab-journey" class="tab-content">
+            <div class="card">
+                <h3>Company Journey Timeline</h3>
+                <div class="grid">
+                    <div class="form-group"><label>Milestone 1 Year</label><input type="text" id="j1Year"></div>
+                    <div class="form-group"><label>Milestone 1 Text</label><input type="text" id="j1Text"></div>
+                    <div class="form-group"><label>Milestone 2 Year</label><input type="text" id="j2Year"></div>
+                    <div class="form-group"><label>Milestone 2 Text</label><input type="text" id="j2Text"></div>
+                    <div class="form-group"><label>Milestone 3 Year</label><input type="text" id="j3Year"></div>
+                    <div class="form-group"><label>Milestone 3 Text</label><input type="text" id="j3Text"></div>
+                    <div class="form-group"><label>Milestone 4 Year</label><input type="text" id="j4Year"></div>
+                    <div class="form-group"><label>Milestone 4 Text</label><input type="text" id="j4Text"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function switchAdminTab(tabId, element) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        element.classList.add('active');
+        document.getElementById('main-content').scrollTop = 0;
+    }
+    firebase.initializeApp({
+      apiKey: "AIzaSyDlx7ezVLsG0YAlReCWYMyPmShS7LYmXyA",
+      authDomain: "sunnovative-web-app.firebaseapp.com",
+      projectId: "sunnovative-web-app",
+      storageBucket: "sunnovative-web-app.firebasestorage.app",
+      messagingSenderId: "87809568620",
+      appId: "1:87809568620:web:447c80724503e2368e4d49"
+    });
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('dashboard-wrapper').style.display = 'flex';
+            loadData();
+        } else {
+            document.getElementById('login-section').style.display = 'flex';
+            document.getElementById('dashboard-wrapper').style.display = 'none';
+        }
+    });
+    function login() {
+        auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value)
+            .catch(err => document.getElementById('login-error').innerText = err.message);
+    }
+    function logout() { auth.signOut(); }
+
+    function populateUI(d) {
+        // Populate Text Fields
+        const fields = ['bossName', 'subtitle', 'tagline', 'phone', 'website', 'bio', 
+                        'p1Title', 'p1Desc', 'p2Title', 'p2Desc', 
+                        'why1Title', 'why1Desc', 'why2Title', 'why2Desc', 'why3Title', 'why3Desc',
+                        'j1Year', 'j1Text', 'j2Year', 'j2Text', 'j3Year', 'j3Text', 'j4Year', 'j4Text'];
+        fields.forEach(f => { if(document.getElementById(f) && d[f]) document.getElementById(f).value = d[f]; });
+        if(d.emailField) document.getElementById('emailField').value = d.emailField;
+        
+        // Populate Media Previews
+        const mediaFields = ['bossPhotoUrl', 'partner1Url', 'partner2Url', 'partner3Url', 'partner4Url', 'factory1Url', 'factory2Url', 'video1Url', 'video2Url'];
+        mediaFields.forEach(f => {
+            if (d[f]) document.getElementById('prev-' + f).src = d[f];
+        });
+    }
+
+    function loadData() {
+        db.collection('siteData').doc('main').get().then(doc => {
+            let d = doc.exists ? doc.data() : {};
+            let needsUpdate = false;
+            
+            // SMART SYNC: If fields are missing in Firebase, inject the defaults and push to Firebase!
+            if(!d.bossPhotoUrl) { d.bossPhotoUrl = "boss-photo.png"; needsUpdate = true; }
+            if(!d.factory1Url) { d.factory1Url = "factory-1.jpg"; d.factory2Url = "factory-2.jpg"; needsUpdate = true; }
+            if(!d.video1Url) { d.video1Url = "video1.mp4"; d.video2Url = "video2.mp4"; needsUpdate = true; }
+            
+            if(!d.partner1Url) { d.partner1Url = "https://logo.clearbit.com/adanisolar.com"; needsUpdate = true; }
+            if(!d.partner2Url) { d.partner2Url = "https://logo.clearbit.com/waaree.com"; needsUpdate = true; }
+            if(!d.partner3Url) { d.partner3Url = "https://logo.clearbit.com/vikramsolar.com"; needsUpdate = true; }
+            if(!d.partner4Url) { d.partner4Url = "https://logo.clearbit.com/tatapowersolar.com"; needsUpdate = true; }
+            
+            if(!d.p1Title) {
+                d.p1Title = "?? Solarkits"; d.p1Desc = "B2B supply for govt tenders and discom schemes.";
+                d.p2Title = "?? BOSkit"; d.p2Desc = "Manufacturing branded BOS kit & OEM supplier.";
+                needsUpdate = true;
+            }
+            if(!d.why1Title) {
+                d.why1Title = "?? Huge Savings"; d.why1Desc = "Solar saves you money on energy bills. As utility costs go up, the amount of your solar savings increases.";
+                d.why2Title = "??? Subsidy Benefits"; d.why2Desc = "Under the Surya Gujarat scheme, up to 40% subsidy is available for residential systems.";
+                d.why3Title = "??? Best-in-Class Warranty"; d.why3Desc = "Enjoy a 10-year replacement warranty on panels and inverters.";
+                needsUpdate = true;
+            }
+            if(!d.j1Year) {
+                d.j1Year = "2017"; d.j1Text = "Founded"; d.j2Year = "2020"; d.j2Text = "Pvt Ltd Established";
+                d.j3Year = "2025"; d.j3Text = "Solarkits supply started"; d.j4Year = "2026"; d.j4Text = "Govt & Discom supply started";
+                needsUpdate = true;
+            }
+            if(!d.bossName) {
+                d.bossName = "Ravi S."; d.subtitle = "Sunnovative / Solarkits"; d.tagline = "Solar Energy Solution Expert";
+                d.phone = "9274863608"; d.emailField = "ravi.s@sunnovative.com"; d.website = "https://sunnovative.com/";
+                d.bio = "Providing best in class branded solar modules for residential, commercial & MW projects.";
+                needsUpdate = true;
+            }
+
+            if (needsUpdate) {
+                db.collection('siteData').doc('main').set(d, {merge: true}).then(() => populateUI(d));
+            } else {
+                populateUI(d);
+            }
+        });
+    }
+
+    function saveAllText() {
+        document.getElementById('global-msg').innerText = 'Saving...';
+        const data = {
+            bossName: document.getElementById('bossName').value, subtitle: document.getElementById('subtitle').value, tagline: document.getElementById('tagline').value,
+            phone: document.getElementById('phone').value, emailField: document.getElementById('emailField').value, website: document.getElementById('website').value,
+            bio: document.getElementById('bio').value,
+            p1Title: document.getElementById('p1Title').value, p1Desc: document.getElementById('p1Desc').value, p2Title: document.getElementById('p2Title').value, p2Desc: document.getElementById('p2Desc').value,
+            why1Title: document.getElementById('why1Title').value, why1Desc: document.getElementById('why1Desc').value, why2Title: document.getElementById('why2Title').value, why2Desc: document.getElementById('why2Desc').value, why3Title: document.getElementById('why3Title').value, why3Desc: document.getElementById('why3Desc').value,
+            j1Year: document.getElementById('j1Year').value, j1Text: document.getElementById('j1Text').value, j2Year: document.getElementById('j2Year').value, j2Text: document.getElementById('j2Text').value, j3Year: document.getElementById('j3Year').value, j3Text: document.getElementById('j3Text').value, j4Year: document.getElementById('j4Year').value, j4Text: document.getElementById('j4Text').value
+        };
+        db.collection('siteData').doc('main').set(data, { merge: true }).then(() => {
+            document.getElementById('global-msg').innerText = 'Text Saved Successfully!';
+            setTimeout(() => document.getElementById('global-msg').innerText = '', 3000);
+        });
+    }
+
+    function uploadFile(inputId, dbField) {
+        const file = document.getElementById(inputId).files[0];
+        if(!file) return alert("Please select a file first!");
+        
+        document.getElementById('global-msg').innerText = 'Uploading ' + file.name + '... (Please wait)';
+        const ref = storage.ref('uploads/' + Date.now() + '_' + file.name);
+        
+        ref.put(file).then(snapshot => snapshot.ref.getDownloadURL()).then(url => {
+            return db.collection('siteData').doc('main').set({ [dbField]: url }, { merge: true });
+        }).then(() => {
+            document.getElementById('global-msg').innerText = 'Upload successful! Website updated.';
+            document.getElementById(inputId).value = ""; 
+            db.collection('siteData').doc('main').get().then(doc => {
+                const d = doc.data();
+                if(d[dbField]) document.getElementById('prev-' + dbField).src = d[dbField];
+            });
+            setTimeout(() => document.getElementById('global-msg').innerText = '', 4000);
+        }).catch(err => {
+            alert("Upload failed: " + err.message);
+            document.getElementById('global-msg').innerText = '';
+        });
+    }
+</script>
+</body>
+</html>
