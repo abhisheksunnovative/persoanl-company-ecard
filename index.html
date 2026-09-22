@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
         .tabs { position: sticky; top: 0; display: flex; background: var(--primary); z-index: 100; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .tab { flex: 1; text-align: center; padding: 16px 10px; color: white; font-weight: 600; cursor: pointer; transition: 0.3s; opacity: 0.7; font-size: 0.95rem; }
         .tab.active { opacity: 1; border-bottom: 4px solid var(--accent); }
-        .admin-link { position: absolute; right: 15px; top: 16px; text-decoration: none; font-size: 16px; opacity: 0.4; transition: 0.3s; }
+        .admin-link { position: absolute; right: 15px; top: 16px; text-decoration: none; font-size: 16px; opacity: 0.4; transition: 0.3s; color:white;}
         .admin-link:hover { opacity: 1; transform: scale(1.1); }
         .section { display: none; padding: 16px; animation: fadeIn 0.3s ease-in-out; }
         .section.active { display: block; }
@@ -20,11 +20,13 @@
         h2 { color: var(--primary); margin-bottom: 16px; font-size: 1.4rem; }
         .card { background: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .profile-header { display: flex; flex-direction: column; text-align: center; align-items: center; gap: 12px; margin-bottom: 20px; }
-        .profile-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .profile-img { width: 260px; height: 260px; max-width: 85vw; max-height: 85vw; border-radius: 50%; object-fit: cover; border: 6px solid var(--accent); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
         .profile-info h1 { font-size: 1.3rem; color: var(--primary); margin-bottom: 4px; }
         .profile-info p { color: var(--text-muted); font-size: 0.9rem; font-weight: 600;}
         .contact-links { display: flex; flex-direction: column; gap: 10px; }
         .contact-links a { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-main); font-weight: 600; background: var(--bg); padding: 12px 16px; border-radius: 8px; transition: 0.2s;}
+        .vcard-btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 1rem; margin-top: 5px; font-family: 'Inter', sans-serif;}
+        .vcard-btn:hover { background: #285e93; }
         .product-item { background: var(--bg); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--accent); }
         .product-item strong { color: var(--primary); display: block; font-size: 1.1rem; margin-bottom: 4px; }
         .product-item p { font-size: 0.9rem; color: var(--text-muted); }
@@ -33,85 +35,85 @@
         .timeline-item::before { content: ''; position: absolute; left: -31px; top: 4px; width: 14px; height: 14px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 4px var(--card-bg); }
         .timeline-year { font-weight: 700; color: var(--primary); font-size: 1.1rem; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .logo-card { background: var(--bg); text-align: center; border-radius: 8px; font-weight: 700; color: var(--primary); display: flex; align-items: center; justify-content: center; height: 80px; font-size: 1.1rem;}
+        .logo-card { background: var(--bg); text-align: center; border-radius: 8px; display: flex; align-items: center; justify-content: center; height: 80px; padding:10px;}
         .gallery img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; margin-bottom: 16px;}
+        .video-box { margin-bottom: 20px; }
+        .video-title { font-weight: 600; color: var(--primary); margin-bottom: 8px; font-size: 1rem;}
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; }
         .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         .cta-btn { position: fixed; bottom: 20px; left: 20px; right: 20px; background: var(--accent); color: var(--primary); text-align: center; padding: 16px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); z-index: 100;}
-        a[href*='netlify.com'], #netlify-badge { display: none !important; }
     </style>
 </head>
 <body>
     <div class="tabs">
         <div class="tab active" onclick="switchTab('page1', this)">Profile & Products</div>
         <div class="tab" onclick="switchTab('page2', this)">Partners & Media</div>
-        <!-- ADMIN LOGIN LINK IN NAVBAR -->
-        <a href="admin.html" class="admin-link" title="Go to Admin Panel">⚙️</a>
+        <a href="admin.html" class="admin-link" title="Admin Login">&#9881;</a>
     </div>
     <div id="page1" class="section active">
         <div class="card">
             <div class="profile-header">
-                <img id="dyn-bossPhotoUrl" src="boss-photo.png" alt="Profile" class="profile-img" onerror="this.src='https://ui-avatars.com/api/?name=User&background=3679bc&color=fff&size=150'">
+                <img id="dyn-bossPhotoUrl" src="" alt="Profile" class="profile-img" onerror="this.src='https://ui-avatars.com/api/?name=User&background=3679bc&color=fff&size=150'">
                 <div class="profile-info">
-                    <h1 id="dyn-bossName">Ravi S.</h1>
-                    <p id="dyn-subtitle">Sunnovative / Solarkits</p>
-                    <p id="dyn-tagline" style="color: var(--primary); font-weight: 700; margin-bottom: 5px; margin-top:5px;">Solar Energy Solution Expert</p>
-                    <p id="dyn-bio" style="font-size: 0.85rem;">Providing best in class branded solar modules for residential, commercial & MW projects.</p>
+                    <h1 id="dyn-bossName">Loading...</h1>
+                    <p id="dyn-subtitle"></p>
+                    <p id="dyn-tagline" style="color: var(--primary); font-weight: 700; margin-bottom: 5px; margin-top:5px;"></p>
+                    <p id="dyn-bio" style="font-size: 0.85rem;"></p>
                 </div>
             </div>
             <div class="contact-links">
-                <a id="dyn-phone-link" href="tel:+919274863608"><span>📞</span> <span id="dyn-phone-text">+91 9274863608</span></a>
-                <a id="dyn-emailField-link" href="mailto:ravi.s@sunnovative.com"><span>✉️</span> <span id="dyn-emailField-text">ravi.s@sunnovative.com</span></a>
-                <a id="dyn-website-link" href="https://sunnovative.com/" target="_blank"><span>🌐</span> <span id="dyn-website-text">sunnovative.com</span></a>
+                <a id="dyn-phone-link" href="#"><span>&#128222;</span> <span id="dyn-phone-text">...</span></a>
+                <a id="dyn-emailField-link" href="#"><span>&#9993;</span> <span id="dyn-emailField-text">...</span></a>
+                <a id="dyn-website-link" href="#" target="_blank"><span>&#127760;</span> <span id="dyn-website-text">...</span></a>
+                <button onclick="downloadVCard()" class="vcard-btn">&#128190; Save Contact (vCard)</button>
             </div>
         </div>
+        
         <div class="card">
             <h2>Our Products & Services</h2>
-            <div class="product-item"><strong id="dyn-p1Title">☀️ Solarkits</strong><p id="dyn-p1Desc">B2B supply for govt tenders and discom schemes.</p></div>
-            <div class="product-item"><strong id="dyn-p2Title">⚙️ BOSkit</strong><p id="dyn-p2Desc">Manufacturing branded BOS kit & OEM supplier.</p></div>
+            <div class="product-item"><strong id="dyn-p1Title"></strong><p id="dyn-p1Desc"></p></div>
+            <div class="product-item"><strong id="dyn-p2Title"></strong><p id="dyn-p2Desc"></p></div>
         </div>
         
         <div class="card">
             <h2>Why Choose Solar?</h2>
-            <div class="product-item"><strong id="dyn-why1Title">💡 Huge Savings</strong><p id="dyn-why1Desc">Solar saves you money on energy bills. As utility costs go up, the amount of your solar savings increases.</p></div>
-            <div class="product-item"><strong id="dyn-why2Title">🏛️ Subsidy Benefits</strong><p id="dyn-why2Desc">Under the Surya Gujarat scheme, up to 40% subsidy is available for residential systems...</p></div>
-            <div class="product-item"><strong id="dyn-why3Title">🛡️ Best-in-Class Warranty</strong><p id="dyn-why3Desc">Enjoy a 10-year replacement warranty on panels and inverters...</p></div>
+            <div class="product-item"><strong id="dyn-why1Title"></strong><p id="dyn-why1Desc"></p></div>
+            <div class="product-item"><strong id="dyn-why2Title"></strong><p id="dyn-why2Desc"></p></div>
+            <div class="product-item"><strong id="dyn-why3Title"></strong><p id="dyn-why3Desc"></p></div>
         </div>
 
         <div class="card">
             <h2>Company Journey</h2>
             <div class="timeline">
-                <div class="timeline-item"><div class="timeline-year" id="dyn-j1Year">2017</div><div class="timeline-text" id="dyn-j1Text">Founded</div></div>
-                <div class="timeline-item"><div class="timeline-year" id="dyn-j2Year">2020</div><div class="timeline-text" id="dyn-j2Text">Pvt Ltd Established</div></div>
-                <div class="timeline-item"><div class="timeline-year" id="dyn-j3Year">2025</div><div class="timeline-text" id="dyn-j3Text">Solarkits supply started</div></div>
-                <div class="timeline-item"><div class="timeline-year" id="dyn-j4Year">2026</div><div class="timeline-text" id="dyn-j4Text">Govt & Discom supply started</div></div>
+                <div class="timeline-item"><div class="timeline-year" id="dyn-j1Year"></div><div class="timeline-text" id="dyn-j1Text"></div></div>
+                <div class="timeline-item"><div class="timeline-year" id="dyn-j2Year"></div><div class="timeline-text" id="dyn-j2Text"></div></div>
+                <div class="timeline-item"><div class="timeline-year" id="dyn-j3Year"></div><div class="timeline-text" id="dyn-j3Text"></div></div>
+                <div class="timeline-item"><div class="timeline-year" id="dyn-j4Year"></div><div class="timeline-text" id="dyn-j4Text"></div></div>
             </div>
         </div>
     </div>
+    
     <div id="page2" class="section">
         <div class="card">
             <h2>Our Solar Brand Partners</h2>
-            <div class="grid">
-                <div class="logo-card" style="padding:0; background:transparent;"><img id="dyn-partner1Url" src="https://via.placeholder.com/150x80/ffffff/3679bc?text=Logo+1" style="width:100%; height:100%; object-fit:contain;"></div>
-                <div class="logo-card" style="padding:0; background:transparent;"><img id="dyn-partner2Url" src="https://via.placeholder.com/150x80/ffffff/3679bc?text=Logo+2" style="width:100%; height:100%; object-fit:contain;"></div>
-                <div class="logo-card" style="padding:0; background:transparent;"><img id="dyn-partner3Url" src="https://via.placeholder.com/150x80/ffffff/3679bc?text=Logo+3" style="width:100%; height:100%; object-fit:contain;"></div>
-                <div class="logo-card" style="padding:0; background:transparent;"><img id="dyn-partner4Url" src="https://via.placeholder.com/150x80/ffffff/3679bc?text=Logo+4" style="width:100%; height:100%; object-fit:contain;"></div>
+            <div class="grid" id="partner-grid">
+                <!-- Up to 10 partner slots dynamically handled -->
             </div>
         </div>
         <div class="card">
             <h2>Factory & Products</h2>
-            <div class="grid gallery">
-                <img id="dyn-factory1Url" src="factory-1.jpg" onerror="this.src='https://via.placeholder.com/300x200?text=Photo+1'">
-                <img id="dyn-factory2Url" src="factory-2.jpg" onerror="this.src='https://via.placeholder.com/300x200?text=Photo+2'">
+            <div class="grid gallery" id="photo-grid">
+                <!-- Up to 5 photo slots -->
             </div>
         </div>
-        <div class="card">
+        <div class="card" id="video-section">
             <h2>Factory Tour Videos</h2>
-            <div class="video-container"><video id="dyn-video1Url" controls src="video1.mp4"></video></div>
-            <div class="video-container"><video id="dyn-video2Url" controls src="video2.mp4"></video></div>
+            <!-- Up to 5 video slots -->
         </div>
     </div>
-    <a id="dyn-wa-link" href="https://wa.me/919274863608" class="cta-btn" target="_blank">Get in touch (WhatsApp)</a>
+    
+    <a id="dyn-wa-link" href="#" class="cta-btn" target="_blank">Get in touch (WhatsApp)</a>
+    
     <script>
         function switchTab(tabId, element) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -119,6 +121,25 @@
             document.getElementById(tabId).classList.add('active');
             element.classList.add('active');
             window.scrollTo(0, 0);
+        }
+
+        function downloadVCard() {
+            let name = document.getElementById('dyn-bossName').innerText || 'Sunnovative';
+            let org = document.getElementById('dyn-subtitle').innerText || '';
+            let phone = (document.getElementById('dyn-phone-text').innerText || '').replace(/\s+/g, '');
+            let email = document.getElementById('dyn-emailField-text').innerText || '';
+            let web = document.getElementById('dyn-website-text').innerText || '';
+            
+            let vcard = "BEGIN:VCARD\nVERSION:3.0\nFN:" + name + "\nORG:" + org + "\nTEL;TYPE=WORK,VOICE:" + phone + "\nEMAIL;TYPE=WORK:" + email + "\nURL:" + web + "\nEND:VCARD";
+            let blob = new Blob([vcard], { type: 'text/vcard' });
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = name.replace(/\s+/g, '_') + '_Contact.vcf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     </script>
     <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
@@ -140,16 +161,16 @@
                 else el.innerText = val;
             }
         };
+        
         db.collection('siteData').doc('main').onSnapshot(doc => {
             if (doc.exists) {
                 const d = doc.data();
-                Object.keys(d).forEach(key => {
-                    if (key.includes('Url')) {
-                        updateEl('dyn-' + key, d[key], true);
-                    } else if (key !== 'phone' && key !== 'emailField' && key !== 'website') {
-                        updateEl('dyn-' + key, d[key], false);
-                    }
-                });
+                
+                // Update Text Elements
+                const txtFields = ['bossName', 'subtitle', 'tagline', 'bio', 'p1Title', 'p1Desc', 'p2Title', 'p2Desc', 'why1Title', 'why1Desc', 'why2Title', 'why2Desc', 'why3Title', 'why3Desc', 'j1Year', 'j1Text', 'j2Year', 'j2Text', 'j3Year', 'j3Text', 'j4Year', 'j4Text'];
+                txtFields.forEach(k => updateEl('dyn-'+k, d[k]));
+                
+                if(d.bossPhotoUrl) updateEl('dyn-bossPhotoUrl', d.bossPhotoUrl, true);
                 
                 if(d.phone) {
                     document.getElementById('dyn-phone-text').innerText = "+91 " + d.phone;
@@ -164,6 +185,41 @@
                     document.getElementById('dyn-website-text').innerText = d.website.replace('https://','');
                     document.getElementById('dyn-website-link').href = d.website;
                 }
+
+                // Render Dynamic Partners (up to 10)
+                let pHTML = '';
+                for(let i=1; i<=10; i++) {
+                    if(d['partner'+i+'Url']) {
+                        pHTML += `<div class="logo-card"><img src="${d['partner'+i+'Url']}" style="width:100%; height:100%; object-fit:contain;"></div>`;
+                    }
+                }
+                document.getElementById('partner-grid').innerHTML = pHTML;
+
+                // Render Dynamic Photos (up to 5)
+                let fHTML = '';
+                for(let i=1; i<=5; i++) {
+                    if(d['factory'+i+'Url']) {
+                        fHTML += `<img src="${d['factory'+i+'Url']}">`;
+                    }
+                }
+                document.getElementById('photo-grid').innerHTML = fHTML;
+
+                // Render Dynamic Videos (up to 5)
+                let vHTML = '<h2>Factory Tour Videos</h2>';
+                let hasVideo = false;
+                for(let i=1; i<=5; i++) {
+                    if(d['video'+i+'Url']) {
+                        hasVideo = true;
+                        let title = d['v'+i+'Title'] || `Video ${i}`;
+                        vHTML += `
+                        <div class="video-box">
+                            <div class="video-title">${title}</div>
+                            <div class="video-container"><video controls src="${d['video'+i+'Url']}"></video></div>
+                        </div>`;
+                    }
+                }
+                document.getElementById('video-section').innerHTML = hasVideo ? vHTML : '';
+                document.getElementById('video-section').style.display = hasVideo ? 'block' : 'none';
             }
         });
     </script>
